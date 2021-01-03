@@ -1,35 +1,43 @@
-# рассмотрим формат передачи данных json
-# в python json можно кодировать (сериализовать)
-# или декодировать (десериализовать)
-# команда dump(arg1, arg2) записывает в файл
-# команда dumps(arg1) записывает в переменную
+# в данном примере разберём пользовательское кодирование и декодирование данных
+# можно создать методы, которые будут считываться перед сериализацией и десериализацией данных
 
 
 import json
 
 
-data = {
-    "name": "Kostan",
-    "age": 32,
-    "color": "red",
-    "specification": [1, 2, 3]
-}
+class Magic(object):
 
-data_clone = {
-    "name": "Tolan",
-    "age": 42,
-    "color": "red",
-    "specification": [7, 2, 3]
-}
+    def __init__(self, name, age, power):
+        self.name = name
+        self.age = age
+        self.power = power
 
-# первый способ записи в файл
-with open("data.json", "w") as file:
-    json.dump(data, file)
+    # сериализуем данные
+    @staticmethod
+    def get_data(self):
+        return {
+            "name": self.name,
+            "age": self.age,
+            "power": self.power
+        }
 
-# второй способ записи в файл
-temp_file = open("data.json", "w")
-json.dump(data_clone, temp_file)
+    # тестовый метод класса
+    @classmethod
+    def get_class(cls, age):
+        return cls(age, 32, 100)
+
+    # десериализуем данные
+    @staticmethod
+    def des_data(data):
+        return [data["name"], data["age"], data["power"]]
 
 
+# сериализуем данные
+mag = Magic.get_class(120)
+data = json.dumps(mag, default=Magic.get_data)
+print(data, type(data))
 
 
+# десериализуем данные
+data = json.loads(data, object_hook=Magic.des_data)
+print(data, type(data))
